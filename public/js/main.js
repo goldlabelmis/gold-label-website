@@ -118,37 +118,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sections.forEach(section => navObserver.observe(section));
 
-  // Contact Form AJAX Handler
-  const contactForm = document.getElementById('contact-form');
-  const formResponse = document.getElementById('form-response');
+  // Careers / Applicant Form AJAX Handler
+  const applicantForm = document.getElementById('applicant-form');
+  const appFormResponse = document.getElementById('app-form-response');
 
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+  if (applicantForm) {
+    applicantForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const data = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        message: document.getElementById('message').value
+        name: document.getElementById('app-name').value,
+        email: document.getElementById('app-email').value,
+        position: document.getElementById('app-position').value,
+        resume: document.getElementById('app-resume').value
       };
 
-      fetch('/api/contact', {
+      fetch('/api/careers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
       .then(res => res.json())
       .then(response => {
-        formResponse.style.color = '#fbbf24';
-        formResponse.style.marginTop = '10px';
-        formResponse.style.fontSize = '0.85rem';
-        formResponse.textContent = response.message;
-        contactForm.reset();
+        if (appFormResponse) {
+          appFormResponse.style.color = '#fbbf24';
+          appFormResponse.style.marginTop = '10px';
+          appFormResponse.style.fontSize = '0.85rem';
+          appFormResponse.textContent = response.message || 'Application submitted successfully!';
+        }
+        applicantForm.reset();
       })
       .catch(() => {
-        formResponse.style.color = '#fca5a5';
-        formResponse.style.marginTop = '10px';
-        formResponse.style.fontSize = '0.85rem';
-        formResponse.textContent = 'Failed to submit inquiry. Please try again.';
+        if (appFormResponse) {
+          appFormResponse.style.color = '#fca5a5';
+          appFormResponse.style.marginTop = '10px';
+          appFormResponse.style.fontSize = '0.85rem';
+          appFormResponse.textContent = 'Failed to submit application. Please try again.';
+        }
       });
     });
   }

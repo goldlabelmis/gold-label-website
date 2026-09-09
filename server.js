@@ -4,6 +4,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Replace this string with your actual Google Apps Script Web App URL
+const GOOGLE_SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxK614aEI2A4E5-rU6CG_Kdy_ISFT7qAEcBzFTm_FWALoytGIwg811NiJXrH_qT0HTO/exec';
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -76,18 +79,54 @@ const products = [
   }
 ];
 
+// Serve Main Page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+// API Route: Get Product Catalog
 app.get('/api/products', (req, res) => {
   res.json(products);
 });
 
-app.post('/api/contact', (req, res) => {
-  const { name, email, message } = req.body;
-  console.log(`Inquiry from ${name} (${email}): ${message}`);
-  res.json({ success: true, message: 'Thank you for reaching out! We will respond shortly.' });
+// API Route: Careers / Applicant Form Submission -> Google Sheets
+app.post('/api/careers', async (req, res) => {
+  const { name, email, position, resume } = req.body;
+
+  // Log locally in terminal
+  console.log('--- New Career Application ---');
+  console.log(`Applicant Name : ${name}`);
+  console.log(`Email Address  : ${email}`);
+  console.log(`Position       : ${position}`);
+  console.log(`Resume Link    : ${resume || 'None provided'}`);
+
+  try {
+    // Send data asynchronously to your Google Sheet Web App endpoint
+    const sheetResponse = await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, position, resume: resume || '' })
+    });
+
+    const result = await sheetResponse.json();
+
+    if (result.status === 'success') {
+      res.json({ 
+        success: true, 
+        message: 'Thank you for your application! Our HR team will review your submission shortly.' 
+      });
+    } else {
+      throw new Error('Google Apps Script returned a failed status response.');
+    }
+  } catch (error) {
+    console.error('Error forwarding data to Google Sheet:', error.message);
+    
+    // Still send a fallback success response if local server received it, or return an error message
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to record application to Google Sheets. Please try again later.' 
+    });
+  }
 });
 
 app.listen(PORT, () => {
