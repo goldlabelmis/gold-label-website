@@ -775,3 +775,101 @@ body.textured-bg {
   .mission-cards-wrapper, .modern-timeline { grid-template-columns: 1fr 1fr; }
   .navbar { flex-direction: column; gap: 0.8rem; }
 }
+
+/* ==========================================
+   UPDATED NAVBAR STYLES
+   ========================================== */
+.navbar-wrapper {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.navbar {
+    background-color: #5c0606;
+    border-radius: 12px;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: #ffc107;
+}
+
+.btn-inquire {
+    border: 1.5px solid #ffc107;
+    padding: 6px 14px;
+    border-radius: 6px;
+    color: #ffc107 !important;
+}
+
+.btn-inquire:hover {
+    background-color: #ffc107;
+    color: #000000 !important;
+}
+
+/* ==========================================
+   CAREERS SECTION STYLES
+   ========================================== */
+.section-careers {
+    scroll-margin-top: 100px;
+}
+
+#career-form input::placeholder,
+#career-form textarea::placeholder {
+    color: #888888;
+}
+
+#career-form input:focus,
+#career-form select:focus,
+#career-form textarea:focus {
+    outline: 2px solid #ffc107;
+    background-color: #ffffff !important;
+}
+
+#career-submit-btn {
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#career-submit-btn:hover {
+    background-color: #e0a800 !important;
+    transform: translateY(-2px);
+}
+
+#career-submit-btn:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .section-careers > div {
+        padding: 24px !important;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+}
